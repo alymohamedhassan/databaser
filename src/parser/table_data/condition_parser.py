@@ -2,8 +2,9 @@ from typing import List, Tuple
 
 
 class ConditionParser:
-    def __init__(self, conditions: dict):
+    def __init__(self, conditions: dict, field_quote: str = ""):
         self.conditions = conditions
+        self.field_quote = field_quote
 
     def condition_interpretation(self, conditions: dict) -> Tuple[List, str]:
         parsed_conditions = []
@@ -54,8 +55,16 @@ class ConditionParser:
         conditions = []
         for fc in field_condition.keys():
             if fc == "$value":
-                parse = f"{field_name} = '{field_condition[fc]}'"
+                parse = f"{self.field_quote}{field_name}{self.field_quote} = '{field_condition[fc]}'"
                 conditions.append(parse)
+            if fc == "$like":
+                parse = f"{field_name} LIKE '{field_condition[fc]}'"
+                conditions.append(parse)
+            if fc == "$in":
+                in_fields = "','".join(field_condition[fc].split(','))
+                parse = f"{field_name} IN ('{in_fields}')"
+                conditions.append(parse)
+
         return conditions
 
     def get_parsed(self):

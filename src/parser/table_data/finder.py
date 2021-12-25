@@ -1,15 +1,20 @@
 from typing import List, Tuple
 
-from core.parser.table_data.condition_parser import ConditionParser
+from src.parser.table_data.condition_parser import ConditionParser
+from src.parser.table_data.join_parser import JoinParser
 
 
 class Finder:
 
-    def __init__(self, table_name: str, fields: List[str] = None, condition: dict = {},
-                 group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0):
+    def __init__(self, table_name: str, fields: List[str] = None, condition: dict = {}, joins: dict = {},
+                 group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0, table_quote="", field_quote=""):
         self.table_name = table_name
         self.limit = limit
         self.conditions = condition
+        self.joins = joins
+
+        self.table_quote = table_quote
+        self.field_quote = field_quote
 
         self.group_by = group_by
         if group_by is None or len(group_by) == 0:
@@ -22,7 +27,7 @@ class Finder:
         if fields is None or len(fields) == 0:
             self.fields = "*"
         else:
-            self.fields = ','.join(fields)
+            self.fields = self.field_quote + f'{self.field_quote},{self.field_quote}'.join(fields) + self.field_quote
 
     def order_by_parser(self, order_by: dict):
         orders = []
@@ -45,11 +50,15 @@ class Finder:
     def get_sql(self) -> str:
         clauses = []
 
-        where = "" if len(self.conditions.keys()) == 0 else "WHERE " + ConditionParser(self.conditions).get_parsed()
+        joins = "" if len(self.joins.keys()) == 0 else JoinParser(self.table_name, self.joins, self.table_quote, self.field_quote).get_parsed()
+        if joins != "":
+            clauses.append(joins)
+
+        where = "" if len(self.conditions.keys()) == 0 else "WHERE " + ConditionParser(self.conditions, self.field_quote).get_parsed()
         if where != "":
             clauses.append(where)
 
-        group_by = "" if len(self.group_by) == 0 else f"GROUP BY {', '.join(self.group_by)}"
+        group_by = "" if len(self.group_by) == 0 else f"GROUP BY {self.field_quote}{f'{self.field_quote}, {self.field_quote}'.join(self.group_by)}{self.field_quote}"
         if group_by != "":
             clauses.append(group_by)
 
@@ -64,4 +73,4 @@ class Finder:
         if len(clauses) > 0:
             clauses.insert(0, "")
 
-        return f"""SELECT {self.fields} FROM {self.table_name}{' '.join(clauses)}"""
+        return f"""SELECT {self.fields} FROM {self.table_quote}{self.table_name}{self.table_quote}{' '.join(clauses)};"""
