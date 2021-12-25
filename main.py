@@ -1,4 +1,4 @@
-from core.tests import test_queries, test_insertions, test_update, test_delete, test_DB, table_structure
+from src.tests import test_queries, test_insertions, test_update, test_delete, test_DB, table_structure
 
 
 def test_app():
