@@ -1,4 +1,4 @@
-from src.parser.table_data.condition_parser import ConditionParser
+from src import ConditionParser
 
 
 class Update:

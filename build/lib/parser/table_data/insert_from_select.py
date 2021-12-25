@@ -1,6 +1,6 @@
 from typing import List
 
-from src.parser.table_data.finder import Finder
+from src import Finder
 
 
 class InsertFromSelect:

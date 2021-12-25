@@ -1,11 +1,11 @@
-from src.parser.database.create_database import CreateDatabase
-from src.parser.database.drop_database import DropDatabase
-from src.parser.pgsql import Query
-from src.parser.table_data.finder import Finder
-from src.parser.table_data.insert_from_select import InsertFromSelect
-from src.parser.table_data.update import Update
-from src.parser.table_structure.add_column import AddColumn
-from src.parser.table_structure.create_table import CreateTable
+from src.databaser.parser.database.create_database import CreateDatabase
+from src.databaser.parser.database.drop_database import DropDatabase
+from src.databaser.pgsql import Query
+from src.databaser.parser.table_data.finder import Finder
+from src.databaser.parser.table_data.insert_from_select import InsertFromSelect
+from src.databaser.parser.table_data.update import Update
+from src.databaser.parser.table_structure.add_column import AddColumn
+from src.databaser.parser.table_structure.create_table import CreateTable
 
 
 def test_queries():

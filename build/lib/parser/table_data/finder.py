@@ -1,7 +1,7 @@
-from typing import List, Tuple
+from typing import List
 
-from src.parser.table_data.condition_parser import ConditionParser
-from src.parser.table_data.join_parser import JoinParser
+from src import ConditionParser
+from src import JoinParser
 
 
 class Finder:

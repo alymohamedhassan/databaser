@@ -1,4 +1,4 @@
-from src.parser.table_data.condition_parser import ConditionParser
+from src.databaser.parser.table_data.condition_parser import ConditionParser
 
 
 class Delete:

@@ -1,9 +1,9 @@
 from typing import List
 
-from src.parser.table_data.finder import Finder
-from src.parser.table_data.insert import Insert
-from src.parser.table_data.update import Update
-from src.parser.table_data.delete import Delete
+from src.databaser.parser.table_data.finder import Finder
+from src.databaser.parser.table_data.insert import Insert
+from src.databaser.parser.table_data.update import Update
+from src.databaser.parser.table_data.delete import Delete
 
 
 class Query:
@@ -28,3 +28,8 @@ class Query:
 
     def delete(self, table_name: str, conditions: dict, value_quote: bool = False):
         return Delete(table_name, conditions, self.FIELD_QUOTE, self.FIELD_QUOTE, value_quote)
+
+
+class TableStructure:
+    def __init__(self):
+        pass
