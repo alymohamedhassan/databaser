@@ -3,4 +3,4 @@ class DropDatabase:
         self.database_name = database_name
 
     def get_sql(self):
-        return f"DROP DATABASE {self.database_name}"
+        return f"DROP DATABASE {self.database_name};"

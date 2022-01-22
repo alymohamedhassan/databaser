@@ -1,0 +1,5 @@
+/build
+/.idea
+install.bat
+pyproject.toml
+uninstall.bat

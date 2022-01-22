@@ -1,4 +1,5 @@
-from src import test_queries, test_insertions, test_update, test_delete, test_DB, table_structure
+from databaser.tests import test_queries, test_insertions, test_update, test_delete, test_DB, table_structure, \
+    test_engine
 
 
 def test_app():

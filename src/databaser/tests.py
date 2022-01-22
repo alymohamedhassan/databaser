@@ -1,11 +1,12 @@
-from src.databaser.parser.database.create_database import CreateDatabase
-from src.databaser.parser.database.drop_database import DropDatabase
-from src.databaser.pgsql import Query
-from src.databaser.parser.table_data.finder import Finder
-from src.databaser.parser.table_data.insert_from_select import InsertFromSelect
-from src.databaser.parser.table_data.update import Update
-from src.databaser.parser.table_structure.add_column import AddColumn
-from src.databaser.parser.table_structure.create_table import CreateTable
+from databaser.engine.engine import DatabaseEngine
+from databaser.parser.database.create_database import CreateDatabase
+from databaser.parser.database.drop_database import DropDatabase
+from databaser.pgsql import Query, TableStructure
+from databaser.parser.table_data.finder import Finder
+from databaser.parser.table_data.insert_from_select import InsertFromSelect
+from databaser.parser.table_data.update import Update
+from databaser.parser.table_structure.add_column import AddColumn
+from databaser.parser.table_structure.create_table import CreateTable, TableField
 
 
 def test_queries():
@@ -176,10 +177,26 @@ def test_delete():
 
 def table_structure():
     print("*"*15, "Testing Table Structure", "*"*15)
-    sql = CreateTable().get_sql()
-    assert sql == ""
+    fields = [
+        TableField(**{
+            "name": "field_one",
+            "data_type": "character varying",
+            "not_null": False,
+            "primary_key": True,
+            "constraint": "UNIQUE",
+        }),
+        TableField(**{
+            "name": "field_one",
+            "data_type": "character varying",
+            "not_null": False,
+            "primary_key": False,
+            "constraint": "UNIQUE",
+        }),
+    ]
+    sql = TableStructure("pgsql").create_table("table_name", fields).get_sql()
+    print("SQL:", sql)
 
-    sql = AddColumn("tablename", "column_name", "string", True).get_sql()
+    sql = TableStructure("pgsql").add_column("tablename", "column_name", "string", True).get_sql()
     print("SQL:", sql)
     # assert sql == "ALTER TABLE tablename ADD COLUMN column_name string NOT NULL"
 
@@ -198,3 +215,8 @@ def test_DB():
 
     sql = Query("pgsql").find("table_name").get_sql()
     print(sql)
+
+
+def test_engine():
+    x = {}
+    DatabaseEngine(**x).execute("SELECT * FROM X")

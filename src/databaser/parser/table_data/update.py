@@ -1,9 +1,10 @@
-from src.databaser.parser.table_data.condition_parser import ConditionParser
+from databaser.parser.table_data.condition_parser import ConditionParser
 
 
 class Update:
-    def __init__(self, table_name: str, data: dict, conditions: dict, table_quote: str = "", field_quote: str = "", value_quote: bool = False):
+    def __init__(self, table_name: str, data: dict, conditions: dict, table_quote: str = "", field_quote: str = "", value_quote: bool = False, schema_name: str = "public"):
         self.table_name = table_name
+        self.schema_name = schema_name
         self.conditions = conditions
         self.data = data
 
@@ -25,4 +26,4 @@ class Update:
         if where != "":
             where = "WHERE " + where
 
-        return f"UPDATE {self.table_quote}{self.table_name}{self.table_quote} SET {f'{self.field_quote}, {self.field_quote}'.join(data)} {where}"
+        return f"UPDATE {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote} SET {f'{self.field_quote}, {self.field_quote}'.join(data)} {where}"
