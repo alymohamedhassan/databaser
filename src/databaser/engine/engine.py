@@ -15,11 +15,10 @@ class DatabaseEngine:
             raise Exception("Missing Database Connection string")
         self.params = params
 
-    # TODO: Add multiple statements
     # TODO: Add SubClasses to handle multiple databases like, MySQL
-    def execute(self, sql: Union[str, List]='SELECT version()', transaction=False,
+    def execute(self, sql: Union[str, List] = 'SELECT version()', transaction=False,
                 has_return=False, return_many=False) -> ExecutionResult:
-        """ Connect to the PostgreSQL database server """
+
         conn = None
         result: List[Dict] = []
         failure = None
@@ -30,7 +29,6 @@ class DatabaseEngine:
 
         try:
             # read connection parameters
-
             # connect to the PostgreSQL server
             print('Connecting to the database...')
             conn = psycopg2.connect(**self.params)
@@ -66,7 +64,7 @@ class DatabaseEngine:
                 else:
                     has_return = False
 
-                print("COMMITING")
+                print("COMMITTING")
                 conn.commit()
             except (Exception, psycopg2.DatabaseError) as error:
                 print("ROLLBACK")

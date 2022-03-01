@@ -1,4 +1,5 @@
-from databaser.engine.engine import DatabaseEngine
+from engine.engine import DatabaseEngine
+
 from databaser.parser.database.create_database import CreateDatabase
 from databaser.parser.database.drop_database import DropDatabase
 from databaser.pgsql import Query, TableStructure
@@ -88,20 +89,20 @@ def test_queries():
             "$type": "innerJoin",  # innerJoin, leftJoin, rightJoin
             "$on": {
                 "$type": "$eq",
-                "tableA": "columnX",
-                "tableB": "columnY",
+                "$tableA": "columnX",
+                "$tableB": "columnY",
                 "$and": {
                     "$table": "$this",
                     "$on": {
                         "$type": "$eq",
-                        "tableA": "columnX",
-                        "tableB": "columnY",
+                        "$tableA": "columnX",
+                        "$tableB": "columnY",
                         "$or": {
                             "$table": "$this",
                             "$on": {
                                 "$type": "$eq",
-                                "tableA": "columnX",
-                                "tableB": "columnY",
+                                "$tableA": "columnX",
+                                "$tableB": "columnY",
                             }
                         }
                     }

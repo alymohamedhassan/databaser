@@ -68,7 +68,7 @@ class DataModel:
     def commit(self):
         return DatabaseEngine(**conn_string).execute(self.__sql, transaction=True)
 
-    def set_schema_name(self, schema_name: str):
+    def set_schema_name(self, schema_name: str = "public"):
         self.schema_name = schema_name
         return self.schema_name
 

@@ -12,6 +12,7 @@ from databaser.parser.database.create_database import CreateDatabase
 from databaser.parser.database.drop_database import DropDatabase
 from databaser.parser.database.create_schema import CreateSchema
 
+
 class Query:
     TABLE_QUOTE = ""
     FIELD_QUOTE = ""
@@ -22,14 +23,15 @@ class Query:
             self.TABLE_QUOTE = '"'
 
     def find(self, table_name: str, fields: List[str] = None, condition: dict = {}, joins: dict = {},
-                 group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0, schema_name: str = "public"):
+             group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0, schema_name: str = "public"):
         return Finder(table_name, fields, condition, joins, group_by, order_by, limit, skip, self.FIELD_QUOTE,
                       self.FIELD_QUOTE, schema_name)
 
     def insert(self, table_name: str, data: dict, value_quote: bool = False, schema_name: str = "public"):
         return Insert(table_name, data, self.TABLE_QUOTE, self.FIELD_QUOTE, value_quote, schema_name)
 
-    def update(self, table_name: str, data: dict, conditions: dict, value_quote: bool = False, schema_name: str = "public"):
+    def update(self, table_name: str, data: dict, conditions: dict, value_quote: bool = False,
+               schema_name: str = "public"):
         return Update(table_name, data, conditions, self.TABLE_QUOTE, self.FIELD_QUOTE, value_quote, schema_name)
 
     def delete(self, table_name: str, conditions: dict, value_quote: bool = False, schema_name: str = "public"):
@@ -45,7 +47,7 @@ class TableStructure:
             self.FIELD_QUOTE = '"'
             self.TABLE_QUOTE = '"'
 
-    def create_table(self, table_name: str, table_fields: List[TableField], schema_name: str,):
+    def create_table(self, table_name: str, table_fields: List[TableField], schema_name: str = "public"):
         return CreateTable(table_name, table_fields, schema_name, self.TABLE_QUOTE, self.FIELD_QUOTE)
 
     def add_column(self, table_name: str, column_name: str, data_type: str, not_null: bool):

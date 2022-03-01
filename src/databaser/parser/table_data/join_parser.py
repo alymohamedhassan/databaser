@@ -10,8 +10,8 @@ class JoinParser:
 
     def get_parsed(self) -> str:
         joins = []
-        for table in self.joins.keys():
-            joins.append(self.parse(table, self.joins[table]))
+        for join_table in self.joins.keys():  # Get all joining tables
+            joins.append(self.parse(join_table, self.joins[join_table]))
 
         return ' '.join(joins)
 
@@ -65,8 +65,8 @@ class JoinParser:
             elif table['$on']['$type'] == "$ne":
                 operator = "<>"
 
-        columnX = table['$on']['tableA']
-        columnY = table['$on']['tableB']
+        columnX = table['$on']['$tableA']
+        columnY = table['$on']['$tableB']
 
         if "$table" not in table:
             raise Exception("Joined Table not specified")

@@ -5,6 +5,7 @@ src/databaser/__init__.py
 src/databaser/config.py
 src/databaser/data_model.py
 src/databaser/databaser.py
+src/databaser/factory.py
 src/databaser/m2m_model.py
 src/databaser/pgsql.py
 src/databaser/tests.py
