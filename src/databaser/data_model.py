@@ -1,5 +1,7 @@
 from typing import List
 
+import function as function
+
 from databaser.engine.engine import DatabaseEngine
 from databaser.parser.table_structure.create_table import TableField
 from databaser.pgsql import Query
@@ -46,6 +48,8 @@ class DataModel:
         return self
 
     def insert(self, data: dict, value_quote: bool = True):
+        self.on_insert()
+
         sql = Query(
             'pgsql'
         ).insert(self.table_name, data=data, value_quote=value_quote, schema_name=self.schema_name).get_sql()
@@ -53,6 +57,8 @@ class DataModel:
         return self
 
     def update(self, data: dict, conditions: dict, value_quote: bool = True):
+        self.on_update()
+
         sql = Query(
             'pgsql'
         ).update(self.table_name, data=data, conditions=conditions, value_quote=value_quote, schema_name=self.schema_name).get_sql()
@@ -66,7 +72,9 @@ class DataModel:
         return DatabaseEngine(**conn_string).execute(self.__sql, has_return=True, return_many=(not fetch_one))
 
     def commit(self):
-        return DatabaseEngine(**conn_string).execute(self.__sql, transaction=True)
+        res = DatabaseEngine(**conn_string).execute(self.__sql, transaction=True)
+        self.on_commit()
+        return res
 
     def set_schema_name(self, schema_name: str = "public"):
         self.schema_name = schema_name
@@ -74,3 +82,18 @@ class DataModel:
 
     def get_schema_name(self) -> str:
         return self.schema_name
+
+    def on_insert(self, func: function = None):
+        if func:
+            func()
+        return self
+
+    def on_update(self, func: function = None):
+        if func:
+            func()
+        return self
+
+    def on_commit(self, func: function = None):
+        if func:
+            func()
+        return self
