@@ -11,11 +11,11 @@ from config import conn_string
 
 class DataModel:
     table_name = None
-    schema_name = 'public'
     fields: List[TableField] = []
 
-    def __init__(self):
+    def __init__(self, schema_name: str = "public"):
         self.__sql = []
+        self.schema_name = schema_name
 
     def __get_fields(self):
         fields = []
@@ -36,10 +36,10 @@ class DataModel:
         self.__sql.append(sql)
         return self
 
-    def get_one(self, fields: List[str] = None, condition: dict = {}, joins: dict = {}):
+    def get_one(self, fields: List[str] = None, condition: dict = {}, joins: dict = {}, order_by: dict = {}):
         sql = Query(
             'pgsql'
-        ).find(self.table_name, fields, condition, joins, limit=1, schema_name=self.schema_name).get_sql()
+        ).find(self.table_name, fields, condition, joins, limit=1, schema_name=self.schema_name, order_by=order_by).get_sql()
         # print("This instance:", id(self))
         # print("This instance:", self.__sql)
 
@@ -62,6 +62,15 @@ class DataModel:
         sql = Query(
             'pgsql'
         ).update(self.table_name, data=data, conditions=conditions, value_quote=value_quote, schema_name=self.schema_name).get_sql()
+        self.__sql.append(sql)
+        return self
+
+    def delete(self, data: dict, conditions: dict, value_quote: bool = True):
+        self.on_delete()
+
+        sql = Query(
+            'pgsql'
+        ).delete(self.table_name, conditions=conditions, value_quote=value_quote, schema_name=self.schema_name).get_sql()
         self.__sql.append(sql)
         return self
 
@@ -94,6 +103,11 @@ class DataModel:
         return self
 
     def on_commit(self, func: function = None):
+        if func:
+            func()
+        return self
+
+    def on_delete(self, func: function = None):
         if func:
             func()
         return self
