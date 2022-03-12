@@ -55,7 +55,7 @@ class DatabaseEngine:
                     else:
                         res = cur.fetchone()
                         if res is not None:
-                            result.append(dict(res))
+                            result: Dict = dict(res)
 
                     # print("Result:", dict(result[0]))
 
