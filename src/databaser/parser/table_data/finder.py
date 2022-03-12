@@ -14,6 +14,7 @@ class Finder:
         self.table_name = table_name
         self.schema_name = schema_name
         self.limit = limit
+        self.offset = skip
         self.conditions = condition
         self.joins = joins
 
@@ -76,6 +77,10 @@ class Finder:
         limit = f"LIMIT {self.limit}" if self.limit is not None and self.limit > 0 else ""
         if limit != "":
             clauses.append(limit)
+
+        offset = f"OFFSET {self.offset}" if self.offset is not None and self.offset > 0 else ""
+        if offset != "":
+            clauses.append(offset)
 
         if len(clauses) > 0:
             clauses.insert(0, "")
