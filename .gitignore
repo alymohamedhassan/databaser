@@ -3,4 +3,5 @@
 install.bat
 pyproject.toml
 uninstall.bat
-*/databaser.egg-info
+dist/databaser-0.0.1-py3.8.egg
+src/databaser.egg-info
