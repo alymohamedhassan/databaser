@@ -30,6 +30,10 @@ class Query:
     def insert(self, table_name: str, data: dict, value_quote: bool = False, schema_name: str = "public"):
         return Insert(table_name, data, self.TABLE_QUOTE, self.FIELD_QUOTE, value_quote, schema_name)
 
+    def insert_many(self, table_name: str, data: dict, value_quote: bool = False, schema_name: str = "public"):
+        # TODO: Not functioning yet
+        return Insert(table_name, data, self.TABLE_QUOTE, self.FIELD_QUOTE, value_quote, schema_name)
+
     def update(self, table_name: str, data: dict, conditions: dict, value_quote: bool = False,
                schema_name: str = "public"):
         return Update(table_name, data, conditions, self.TABLE_QUOTE, self.FIELD_QUOTE, value_quote, schema_name)
@@ -58,11 +62,19 @@ class TableStructure:
 
 
 class DatabaseStructure:
+    TABLE_QUOTE = ""
+    FIELD_QUOTE = ""
+
+    def __init__(self, server_name: str):
+        if server_name == "pgsql":
+            self.FIELD_QUOTE = '"'
+            self.TABLE_QUOTE = '"'
+
     def create_database(self, database_name: str):
-        return CreateDatabase(database_name)
+        return CreateDatabase(database_name, self.TABLE_QUOTE)
 
     def drop_database(self, database_name: str):
-        return DropDatabase(database_name)
+        return DropDatabase(database_name, self.TABLE_QUOTE)
 
     def create_schema(self, schema_name):
-        return CreateSchema(schema_name)
+        return CreateSchema(schema_name, self.TABLE_QUOTE)
