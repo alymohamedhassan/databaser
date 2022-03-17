@@ -42,7 +42,7 @@ class DatabaseEngine:
                 if transaction:
                     sql = self.transaction + sql
 
-                print('Executing SQL:', sql)
+                # print('Executing SQL:', sql)
                 cur.execute(str(sql))
 
                 # display the PostgreSQL database server version
