@@ -10,6 +10,7 @@ class TableField(BaseModel):
     data_type: str
     not_null: bool = False
     primary_key: bool = False
+    context_data_type: Optional[str] = "Unknown"
     constraint: Optional[str] = ""
     default: Optional[str]
     references: Optional[str]
@@ -44,6 +45,6 @@ class CreateTable:
     def get_sql(self):
         fields = self.parse_fields()
 
-        return f"""CREATE TABLE {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote} (
+        return f"""CREATE TABLE IF NOT EXISTS {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote} (
             {fields}
         );"""
