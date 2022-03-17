@@ -1,6 +1,280 @@
 # Databaser
 
-## Intro
-It is an ORM that is connect to the database (Currently, Postgresql), and gives you the ability to insert and select using python dictionary making development more flexible and easier than other production ORMs.
+## Introduction
 
-## Documenttion Coming Soon
+It is an ORM that is connected to the database (Currently, Postgresql), 
+and gives you the ability to insert and select using python dictionary making development more flexible and easier than other production ORMs.
+
+
+## Design Principles
+
+- Having a small learning curve
+- Manage databases easily, and quickly prototype/develop
+- Focus on readability
+- Avoiding SQL typos and mistakes
+
+
+# Documentation 
+
+### Project Components
+
+1) Query Builder:
+   This component is responsible for building SQL Query using simple python object
+
+2) Table Structure:
+   This is a query builder for table structure
+
+3) Data Model:
+    Data models represents a table in the postgres database, holds:
+   1) Table Name
+   2) Schema Name
+   3) Fields
+    
+4) PG Engine
+    A simple query/statement executor built-in for data models
+
+### Query Builder 
+The query class contains the crud operations as internal methods
+
+1) Find
+2) Insert
+3) Update
+4) Delete
+
+The method used to return the raw SQL statement is .get_sql() inside the Query Class 
+
+### A) Find
+
+This is used for select statements in PG SQL
+
+#### Basic SELECT
+
+A simple SELECT query will mostly look like this
+    
+    SELECT * FROM tableA
+
+Let's convert it to the python Code
+    
+    Query("pgsql").find("tableA").get_sql()
+
+How about calling fields?
+Hint: table names are added by default next to a field name automatically to avoid ambiguous fields in joins
+ 
+    SELECT "tableA"."id", "tableA"."name" FROM tableA
+
+Let's convert it to the python Code
+    
+    Query("pgsql").find("tableA", ["id", "name"]).get_sql()
+
+Want to limit the results to 10 only? easy
+ 
+    SELECT "tableA"."id", "tableA"."name" FROM tableA LIMIT 10
+
+Let's convert it to the python Code
+    
+    Query("pgsql").find("tableA", ["id", "name"], limit=10).get_sql()
+
+Offset? get results between certain ranges?
+ 
+    SELECT "tableA"."id", "tableA"."name" FROM tableA LIMIT 10 OFFSET 10
+
+Let's convert it to the python Code
+    
+    Query("pgsql").find("tableA", ["id", "name"], limit=10, skip=10).get_sql()
+
+##### Where Conditions
+
+Let's say we want to limit our query to name = "John"
+    
+    SELECT * FROM "tableA" WHERE "tableA"."name" = 'John' LIMIT 10;
+
+Python:
+
+Type the field name inside an object and inside that a new dictionary that holds the condition name you need like below
+
+    condition = {
+        "name": {
+            "$value": "John"
+        },
+    }
+
+    Query("pgsql").find("tableA", condition=condition)
+    
+Reference
+
+Before continuing the documentation, here are some notations that are used below.
+
+These are keywords to use on the conditions, inspired from mongodb querying
+
+    1- $value: This requires a value and means literal equal (=)
+    2- $like: This represents the LIKE in SQL and the value is expected to contain the wildcards (%)
+    3- $in: Corresponds to Not IN, in SQL => Expecting a string separated with a comma ("a,b,c")
+    4- $nin: Corresponds to Not IN, in SQL => Expect the same as $in
+    5- $group: grouping statments like, ((X = 1 AND Y = 1) OR Z = 2)
+        a- Requires $type => ( OR, AND )
+            eg:- WHEN $type = OR, (A = 1 OR B = 1)
+            eg:- WHEN $type = AND, (A = 1 AND B = 1)
+
+Continuing the tutorial...
+
+The rest of the tutorial of the conditions will only contain the condition dictionary
+
+    WHERE "name" = 'John';
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$value": "John"
+        }
+    }
+
+Getting names that starts with John
+
+    WHERE "name" LIKE 'John%';
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$like": "John%"
+        }
+    }
+
+Getting records that has one of those names John, Mike, Zack
+
+    WHERE "name" IN ('John', 'Mike', 'Zack');
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$in": "John,Mike,Zack"
+        }
+    }
+
+Getting records that not in one of those names John, Mike
+
+    WHERE "name" IN ('John', 'Mike');
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$nin": "John,Mike"
+        }
+    }
+
+Grouping conditions 
+
+    WHERE ("name" = 'John' OR "name" = 'Mike') AND "name" = 'Zack';
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$value": "Zack"
+        },
+        "$group": {
+            "$type": "OR",
+            "name": {
+                "$value": "John",
+            },
+            "name": {
+                "$value": "Mike",
+            },
+        }
+    }
+
+And now run this to get the result
+
+    Query("pgsql").find("tableA", condition=condition).get_sql()
+
+This allows for a lot of flexibility when writing code
+
+What about joins? Well, the same idea goes here too.
+
+    SELECT * FROM "tableA" INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY";
+
+Create a dictionary and follow the instructions below
+
+    joins = {
+        "tableB": {
+            "$table": "$this",
+            "$type": "innerJoin",  # innerJoin, leftJoin, rightJoin
+            "$on": {
+                "$type": "$eq",
+                "$tableA": "columnX",
+                "$tableB": "columnY",
+            }
+        },
+    }
+
+To follow with the join instructions, there are some notation for it
+
+    1) $table => References the table joined
+    2) $this => Used with the notation above to indicate that the joining table is the currently selected table
+    
+    3) $on => Corresponds to the (ON) keyword in SQL used in joins
+        i) $type => type of join, Equijoin, non-equijoin
+            a) $eq => Equal (=)
+            a) $gt => Greater Than (>)
+            a) $gte => Greater Than or Equal (>=)
+            a) $lt => Less Than (<)
+            a) $lte => Less Than or Equal (<=)
+            a) $ne => Not Equal (<>)
+
+        ii) $tableA => References the table on the left when joining, the value is the field joining on
+        iii) $tableB => References the table on the right when joining, the value is the field joining on
+
+Again, the rest of the joining documentation will continue with the join dictionary only
+
+    INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY";
+
+Corresponds to ...
+
+    joins = {
+        "tableB": {
+            "$table": "$this",  # This table is the table joined 
+            "$type": "innerJoin",  # innerJoin, leftJoin, rightJoin
+            "$on": {
+                "$type": "$eq",  # eq, gt, gte, lt, lte, ne
+                "$tableA": "columnX",
+                "$tableB": "columnY",
+            }
+        },
+    }
+
+How about adding another condition in the join? easy
+
+    INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY" AND "tableA"."columnX" = "tableB"."columnY";
+
+Corresponds to ...
+
+    joins = {
+        "tableB": {
+            "$table": "$this",
+            "$type": "innerJoin",  # innerJoin, leftJoin, rightJoin
+            "$on": {
+                "$type": "$eq",
+                "$tableA": "columnX",
+                "$tableB": "columnY",
+                "$and": {  # $and, $or
+                    "$table": "$this",
+                    "$on": {
+                        "$type": "$eq",
+                        "$tableA": "columnX",
+                        "$tableB": "columnY",
+                    }
+                }
+            }
+        },
+    }
+
+### Insert
+
+
+### Update
+
+
+### Delete
