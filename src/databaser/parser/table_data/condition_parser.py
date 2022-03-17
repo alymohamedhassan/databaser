@@ -64,6 +64,10 @@ class ConditionParser:
                 in_fields = "','".join(field_condition[fc].split(','))
                 parse = f"{field_name} IN ('{in_fields}')"
                 conditions.append(parse)
+            if fc == "$nin":  # TODO: Add support for type to be list instead of str and split by , and support for SQL
+                in_fields = "','".join(field_condition[fc].split(','))
+                parse = f"{field_name} NOT IN ('{in_fields}')"
+                conditions.append(parse)
 
         return conditions
 
