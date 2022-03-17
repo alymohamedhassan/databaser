@@ -302,5 +302,24 @@ Then ...
 
 ### Update
 
+The update class supports both, the data and the conditions dictionaries as parameters 
+
+To generate this ...
+
+    UPDATE "table_name" SET "name" = 'John' WHERE "name" = 'Mike';
+
+Add this ...
+
+    conditions = {
+        "name": {
+            "$value": "Mike"
+        }
+    }
+    data = {
+        "name": "John"
+    }
+    sql = Query("pgsql").update("table_name", data=data, conditions=conditions).get_sql()
+
+
 
 ### Delete
