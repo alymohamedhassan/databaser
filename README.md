@@ -340,8 +340,58 @@ Add ...
 ### Table Stucture
 
 Create a table structure with the following 
+    
+    CREATE TABLE "XYZ" (
+        id serial not null primary key,
+        name character varying not null
+    );
+
+Python Code:
+
+    fields = [
+        TableField(**{
+            "name": "id",
+            "data_type": "serial",
+            "not_null": True,
+            "primary_key": True,
+        }),
+        TableField(**{
+            "name": "name",
+            "data_type": "character varying",
+            "not_null": True,
+        }),
+    ]
+    sql = TableStructure("pgsql").create_table("table_name", fields).get_sql()
+
+To add a column
+    
+    ALTER TABLE "tablename" ADD COLUMN "field_name" character varying not null;
+
+Python Code ...
+
+    TableStructure("pgsql").add_column("tablename", "field_name", "character varying", not_null=True).get_sql()
+
 
 
 ### Data Model
 
-### Engine
+T.B.C ...
+
+### Database Engine
+
+    DatabaseEngine(**conn_string).execute("SELECT * FROM X")
+
+
+The DatabaseEngine Class responds with an ExecutionResult data type
+
+    class ExecutionResult(BaseModel):
+        has_values: bool
+        sql: str
+        result: Optional[Union[List[Dict], Dict]]
+
+The result parameter will return a list by default, 
+
+But if the execute method has return_many=False, logically used when the limit is = 1, but not enforced
+
+    DatabaseEngine(**conn_string).execute("SELECT * FROM X", return_many=False)
+
