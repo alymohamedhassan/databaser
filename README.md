@@ -271,7 +271,7 @@ Corresponds to ...
         },
     }
 
-### Insert
+#### Insert
 
 Inserting statements is much easier
 
@@ -300,7 +300,7 @@ Then ...
     
     InsertFromSelect("table_name", ['a','b','c',], select).get_sql()
 
-### Update
+#### Update
 
 The update class supports both, the data and the conditions dictionaries as parameters 
 
@@ -321,7 +321,7 @@ Add this ...
     sql = Query("pgsql").update("table_name", data=data, conditions=conditions).get_sql()
 
 
-### Delete
+#### Delete
 
 To delete a record
     
@@ -337,3 +337,11 @@ Add ...
     sql = Query("pgsql").delete("table_name", conditions=conditions).get_sql()
 
 
+### Table Stucture
+
+Create a table structure with the following 
+
+
+### Data Model
+
+### Engine
