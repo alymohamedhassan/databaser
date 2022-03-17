@@ -321,5 +321,19 @@ Add this ...
     sql = Query("pgsql").update("table_name", data=data, conditions=conditions).get_sql()
 
 
-
 ### Delete
+
+To delete a record
+    
+    DELETE FROM "table_name" WHERE "name" = 'Mike';
+
+Add ...
+
+    conditions = {
+        "name": {
+            "$value": "Mike"
+        }
+    }
+    sql = Query("pgsql").delete("table_name", conditions=conditions).get_sql()
+
+
