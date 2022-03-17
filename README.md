@@ -273,6 +273,32 @@ Corresponds to ...
 
 ### Insert
 
+Inserting statements is much easier
+
+    INSERT INTO "table_name" ("a", "b", "c") VALUES ('1', '2', '3');
+
+Create a dictionary called data and call the following
+
+    data = {
+        "a": 1,
+        "b": 2,
+        "c": 3,
+    }
+    sql = Query("pgsql").insert("table_name", data=data, value_quote=True).get_sql()
+
+Realize the value_quote=True parameter? this is used to add single quotes for string values
+
+Insert from a select statement?
+
+    INSERT INTO table_name (a,b,c) SELECT * FROM tableB;
+
+Create your select query first
+
+    select = Finder("tableB", group_by=["name", "id"])
+
+Then ...
+    
+    InsertFromSelect("table_name", ['a','b','c',], select).get_sql()
 
 ### Update
 
