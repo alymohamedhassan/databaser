@@ -2,6 +2,7 @@ from typing import List
 
 from databaser.parser.table_data.finder import Finder
 from databaser.parser.table_data.insert import Insert
+from databaser.parser.table_data.insert_from_select import InsertFromSelect
 from databaser.parser.table_data.update import Update
 from databaser.parser.table_data.delete import Delete
 from databaser.parser.table_structure.add_column import AddColumn
@@ -29,6 +30,9 @@ class Query:
 
     def insert(self, table_name: str, data: dict, value_quote: bool = False, schema_name: str = "public"):
         return Insert(table_name, data, self.TABLE_QUOTE, self.FIELD_QUOTE, value_quote, schema_name)
+
+    def insert_select(self, table_name: str, select: Finder, value_quote: bool = False, schema_name: str = "public"):
+        return InsertFromSelect(table_name, select.fields, select)  # TODO: Assign
 
     def insert_many(self, table_name: str, data: dict, value_quote: bool = False, schema_name: str = "public"):
         # TODO: Not functioning yet
