@@ -375,12 +375,67 @@ Python Code ...
 
 ### Data Model
 
-T.B.C ...
+A data model represents a table in the database, there are two types of models
+
+1) Data Model:
+   - Represents a simple table in the database
+
+2) Many 2 Many Data Model (Under Development)
+   - represents a many-2-many table in the database, supporting automatic joins on data selection.
+
+For a data model to work, create a class with the name of the table, inherit the class  (DataModel), and assign the internal properties like the following
+
+There are 3 main properties
+
+    table_name: The Name of the table
+    schema_name: by default set to public
+    fields: a list that holds the fields, 
+    -----
+    Hint: A field is a TableField class used from the table structure in the query builder, go back to the table structure section
+        to find the remaining of the TableField properties, like foreign key, and context_data_type
+
+Full code ...
+
+    class User(DataModel):
+        table_name = 'user_user'
+        
+        fields = [
+            TableField(name="user_id", data_type="serial", primary_key=True, not_null=True,),
+        ]
+
+The sole purpose of data models is to make all CRUD operations easier, so it supports all the above query building operations internally.
+
+Let's select 5 users with name that starts with mike.
+
+    conditions = {
+        "name": {
+            "$like": "mike%"
+        }
+    }
+
+    User().get(
+        condition=conditions,
+        limit=5,
+    ).show()
+
+Date models support these methods internally,
+    
+    - get
+    - get_one
+    - insert
+    - insert_many (Under Development)
+    - update
+    - delete
+
+A follow-up documentation will talk more about the details ...
+
 
 ### Database Engine
 
-    DatabaseEngine(**conn_string).execute("SELECT * FROM X")
+    conn_string = {'host': 'localhost', 'database': 'db_name', 'user': 'postgres', 'password': 'mysecretpassword'}
+    
 
+    DatabaseEngine(**conn_string).execute("SELECT * FROM X")
 
 The DatabaseEngine Class responds with an ExecutionResult data type
 
