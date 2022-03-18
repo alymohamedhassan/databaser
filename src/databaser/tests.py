@@ -1,9 +1,9 @@
-from engine.engine import DatabaseEngine
+# from engine.engine import DatabaseEngine
+from databaser.engine.engine import DatabaseEngine
 
 from databaser.parser.database.create_database import CreateDatabase
 from databaser.parser.database.drop_database import DropDatabase
 from databaser.pgsql import Query, TableStructure
-from databaser.parser.table_data.finder import Finder
 from databaser.parser.table_data.insert_from_select import InsertFromSelect
 from databaser.parser.table_data.update import Update
 from databaser.parser.table_structure.add_column import AddColumn
@@ -15,17 +15,17 @@ def test_queries():
     # SELECT * FROM tablename
     sql = Query("pgsql").find("table_name").get_sql()
     print(sql)
-    assert sql == 'SELECT * FROM "table_name";'
+    assert sql == 'SELECT * FROM "public"."table_name";'
 
     # SELECT a, b, c FROM table_name
     sql = Query("pgsql").find("table_name", ["a", "b", "c"]).get_sql()
     print(sql)
-    assert sql == 'SELECT "a","b","c" FROM "table_name";'
+    assert sql == 'SELECT "a","b","c" FROM "public"."table_name";'
 
     # SELECT a, b, c FROM table_name LIMIT 10
     sql = Query("pgsql").find("table_name", ["a", "b", "c"], limit=10).get_sql()
     print(sql)
-    assert sql == 'SELECT "a","b","c" FROM "table_name" LIMIT 10;'
+    assert sql == 'SELECT "a","b","c" FROM "public"."table_name" LIMIT 10;'
 
     # SELECT * FROM table_name WHERE name = 'abc'
     condition = {
@@ -35,7 +35,7 @@ def test_queries():
     }
     sql = Query("pgsql").find("table_name", ["a", "b", "c"], condition=condition, limit=10).get_sql()
     print(sql)
-    assert sql == """SELECT "a","b","c" FROM "table_name" WHERE "name" = 'abc' LIMIT 10;"""
+    assert sql == """SELECT "a","b","c" FROM "public"."table_name" WHERE "name" = 'abc' LIMIT 10;"""
 
     # SELECT * FROM table_name WHERE name = 'abc' AND names = 'abc'
     condition = {
@@ -46,9 +46,9 @@ def test_queries():
             "$value": "abc"
         },
     }
-    sql = Finder("table_name", ["a", "b", "c"], condition=condition, limit=10).get_sql()
+    sql = Query("pgsql").find("table_name", ["a", "b", "c"], condition=condition, limit=10).get_sql()
     print(sql)
-    assert sql == "SELECT a,b,c FROM table_name WHERE name = 'abc' AND names = 'abc' LIMIT 10;"
+    assert sql == """SELECT "a","b","c" FROM "public"."table_name" WHERE "name" = 'abc' AND "names" = 'abc' LIMIT 10;"""
 
     # SELECT * FROM table_name WHERE name = 'abc'
     condition = {
@@ -68,19 +68,19 @@ def test_queries():
             },
         }
     }
-    sql = Finder("table_name", ["a", "b", "c"], condition=condition, limit=10).get_sql()
+    sql = Query("pgsql").find("table_name", ["a", "b", "c"], condition=condition, limit=10).get_sql()
     print(sql)
-    assert sql == "SELECT a,b,c FROM table_name WHERE name = 'abc' AND (name = 'abc' OR names LIKE '%abc%' OR named IN ('a','b','c')) LIMIT 10;"
+    assert sql == """SELECT "a","b","c" FROM "public"."table_name" WHERE "name" = 'abc' AND ("name" = 'abc' OR "names" LIKE '%abc%' OR "named" IN ('a','b','c')) LIMIT 10;"""
 
     # SELECT * FROM table_name GROUP BY name, lol
     sql = Query("pgsql").find("table_name", group_by=["name", "lol"]).get_sql()
     print(sql)
-    assert sql == """SELECT * FROM "table_name" GROUP BY "name", "lol";"""
+    assert sql == """SELECT * FROM "public"."table_name" GROUP BY "name", "lol";"""
 
     # SELECT * FROM table_name ORDER BY name ASC
-    sql = Finder("table_name", order_by={"name": True}).get_sql()
+    sql = Query("pgsql").find("table_name", order_by={"name": True}).get_sql()
     print(sql)
-    assert sql == "SELECT * FROM table_name ORDER BY name ASC;"
+    assert sql == """SELECT * FROM "public"."table_name" ORDER BY "name" ASC;"""
 
     # SELECT * FROM tableA INNER JOIN tableB ON tableA.columnX = tableB.columnY
     joins = {
@@ -112,7 +112,7 @@ def test_queries():
     }
     sql = Query("pgsql").find("tableA", joins=joins).get_sql()
     print(sql)
-    assert sql == """SELECT * FROM "tableA" INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY" AND "tableA"."columnX" = "tableB"."columnY" OR "tableA"."columnX" = "tableB"."columnY";"""
+    assert sql == """SELECT * FROM "public"."tableA" INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY" AND "tableA"."columnX" = "tableB"."columnY" OR "tableA"."columnX" = "tableB"."columnY";"""
 
 
 def test_insertions():
@@ -125,12 +125,13 @@ def test_insertions():
     }
     sql = Query("pgsql").insert("table_name", data=data, value_quote=True).get_sql()
     print(sql)
-    assert sql == """INSERT INTO "table_name" ("a", "b", "c") VALUES ('1', '2', '3')"""
+    assert sql == """INSERT INTO "public"."table_name" ("a", "b", "c") VALUES ('1', '2', '3');"""
 
-    select = Finder("tableB", group_by=["name", "lol"])
-    sql = InsertFromSelect("table_name", ['a','b','c',], select).get_sql()
-    print(sql)
-    assert sql == "INSERT INTO table_name (a,b,c) SELECT * FROM tableB GROUP BY name, lol;"
+    # TODO: Assign
+    # select = Query("pgsql").find("tableB", group_by=["name", "lol"])
+    # sql = Query("pgsql").insert_select("table_name", select=select,).get_sql()
+    # print(sql)
+    # assert sql == """INSERT INTO "public"."table_name" (a,b,c) SELECT * FROM "public"."tableB" GROUP BY "name", "lol";"""
 
 
 def test_update():
@@ -146,7 +147,7 @@ def test_update():
     }
     sql = Query("pgsql").update("table_name", data=data, conditions=conditions).get_sql()
     print(sql)
-    assert sql == """UPDATE "table_name" SET "name" = 'lol' WHERE "name" = 'mido'"""
+    assert sql == """UPDATE "public"."table_name" SET "name" = 'lol' WHERE "name" = 'mido';"""
 
     # UPDATE table_name SET name = 'lol' WHERE name = 'mido'
     conditions = {
@@ -158,9 +159,9 @@ def test_update():
         "name": "lol",
         "date": "lol",
     }
-    sql = Update("table_name", data=data, conditions=conditions).get_sql()
+    sql = Query("pgsql").update("table_name", data=data, conditions=conditions).get_sql()
     print(sql)
-    assert sql == "UPDATE table_name SET name = 'lol', date = 'lol' WHERE name = 'mido'"
+    assert sql == """UPDATE "public"."table_name" SET "name" = 'lol', "date" = 'lol' WHERE "name" = 'mido';"""
 
 
 def test_delete():
@@ -173,7 +174,7 @@ def test_delete():
     }
     sql = Query("pgsql").delete("table_name", conditions=conditions).get_sql()
     print(sql)
-    assert sql == """DELETE FROM "table_name" WHERE "name" = 'mido'"""
+    assert sql == """DELETE FROM "public"."table_name" WHERE "name" = 'mido'"""
 
 
 def table_structure():
@@ -207,12 +208,12 @@ def test_DB():
     # CREATE DATABASE database_name
     sql = CreateDatabase("database_name").get_sql()
     print(sql)
-    assert sql == "CREATE DATABASE database_name"
+    assert sql == """CREATE DATABASE "database_name";"""
 
     # CREATE DATABASE database_name
     sql = DropDatabase("database_name").get_sql()
     print(sql)
-    assert sql == "DROP DATABASE database_name"
+    assert sql == """DROP DATABASE "database_name";"""
 
     sql = Query("pgsql").find("table_name").get_sql()
     print(sql)
