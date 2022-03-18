@@ -48,7 +48,7 @@ class Finder:
             else:
                 order_type = order_type.upper()
 
-            orders.append(f'{field} {order_type}')
+            orders.append(f'{self.field_quote}{field}{self.field_quote} {order_type}')
 
         return f"ORDER BY {','.join(orders)}"
 

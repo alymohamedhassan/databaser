@@ -26,4 +26,4 @@ class Update:
         if where != "":
             where = "WHERE " + where
 
-        return f"UPDATE {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote} SET {f'{self.field_quote}, {self.field_quote}'.join(data)} {where}"
+        return f"UPDATE {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote} SET {f', '.join(data)} {where};"

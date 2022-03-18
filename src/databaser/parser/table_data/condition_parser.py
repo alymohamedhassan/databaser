@@ -58,15 +58,15 @@ class ConditionParser:
                 parse = f"{self.field_quote}{field_name}{self.field_quote} = '{field_condition[fc]}'"
                 conditions.append(parse)
             if fc == "$like":
-                parse = f"{field_name} LIKE '{field_condition[fc]}'"
+                parse = f"{self.field_quote}{field_name}{self.field_quote} LIKE '{field_condition[fc]}'"
                 conditions.append(parse)
             if fc == "$in":
                 in_fields = "','".join(field_condition[fc].split(','))
-                parse = f"{field_name} IN ('{in_fields}')"
+                parse = f"{self.field_quote}{field_name}{self.field_quote} IN ('{in_fields}')"
                 conditions.append(parse)
             if fc == "$nin":  # TODO: Add support for type to be list instead of str and split by , and support for SQL
                 in_fields = "','".join(field_condition[fc].split(','))
-                parse = f"{field_name} NOT IN ('{in_fields}')"
+                parse = f"{self.field_quote}{field_name}{self.field_quote} NOT IN ('{in_fields}')"
                 conditions.append(parse)
 
         return conditions
