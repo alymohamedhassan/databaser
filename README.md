@@ -2,7 +2,7 @@
 
 ## Introduction
 
-It is an ORM that is connected to the database (Currently, Postgresql), 
+It is query builder that can be connected to the database (Currently, Postgresql), 
 and gives you the ability to insert and select using python dictionary making development more flexible and easier than other production ORMs.
 
 ### Databases Supported
