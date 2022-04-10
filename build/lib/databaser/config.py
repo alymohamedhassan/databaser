@@ -3,7 +3,7 @@ from configparser import ConfigParser
 
 def system_environment(filename: str, section: str):
 
-    # create a parser
+    # create a db_parser
     parser = ConfigParser()
     # read config file
     parser.read(filename)

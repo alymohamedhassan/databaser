@@ -2,8 +2,8 @@ from typing import List
 
 from databaser.engine.engine import DatabaseEngine
 from databaser.engine.result import ExecutionResult
-from databaser.parser.table_data.condition_parser import ConditionParser
-from databaser.parser.table_data.join_parser import JoinParser
+from databaser.db_parser.table_data.condition_parser import ConditionParser
+from databaser.db_parser.table_data.join_parser import JoinParser
 
 
 class Finder:
@@ -32,7 +32,9 @@ class Finder:
         if fields is None or len(fields) == 0:
             self.fields = "*"
         else:
-            self.fields = self.field_quote + f'{self.field_quote},{self.field_quote}'.join(fields) + self.field_quote
+            fields = [f"{self.field_quote}{self.schema_name}{self.field_quote}.{self.field_quote}{self.table_name}{self.field_quote}.{self.field_quote}{field}{self.field_quote}"
+                           for field in fields]
+            self.fields = f','.join(fields)
 
     def order_by_parser(self, order_by: dict):
         orders = []
@@ -56,7 +58,8 @@ class Finder:
         clauses = []
 
         joins = "" if len(self.joins.keys()) == 0 else JoinParser(self.table_name, self.joins, self.table_quote,
-                                                                  self.field_quote).get_parsed()
+                                                                  self.field_quote
+                                                                  ).get_parsed()
         if joins != "":
             clauses.append(joins)
 

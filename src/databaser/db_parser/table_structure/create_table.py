@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from databaser.parser.table_structure.references_fk import ReferencesFK
+from databaser.db_parser.table_structure.references_fk import ReferencesFK
 
 
 class TableField(BaseModel):

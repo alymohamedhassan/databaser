@@ -1,13 +1,14 @@
 # from engine.engine import DatabaseEngine
-from databaser.engine.engine import DatabaseEngine
+# from databaser.engine.engine import DatabaseEngine
 
-from databaser.parser.database.create_database import CreateDatabase
-from databaser.parser.database.drop_database import DropDatabase
-from databaser.pgsql import Query, TableStructure
-from databaser.parser.table_data.insert_from_select import InsertFromSelect
-from databaser.parser.table_data.update import Update
-from databaser.parser.table_structure.add_column import AddColumn
-from databaser.parser.table_structure.create_table import CreateTable, TableField
+from db_parser.database.create_database import CreateDatabase
+from db_parser.database.drop_database import DropDatabase
+from pgsql import Query, TableStructure
+from db_parser.table_data.insert_from_select import InsertFromSelect
+from db_parser.table_data.update import Update
+from db_parser.table_structure.add_column import AddColumn
+from db_parser.table_structure.create_table import CreateTable, TableField
+from pgsql import Query
 
 
 def test_queries():

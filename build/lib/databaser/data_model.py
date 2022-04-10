@@ -3,7 +3,7 @@ from typing import List
 import function as function
 
 from databaser.engine.engine import DatabaseEngine
-from databaser.parser.table_structure.create_table import TableField
+from databaser.db_parser.table_structure.create_table import TableField
 from databaser.pgsql import Query
 
 from config import conn_string

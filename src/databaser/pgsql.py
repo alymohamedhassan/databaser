@@ -1,17 +1,17 @@
 from typing import List
 
-from databaser.parser.table_data.finder import Finder
-from databaser.parser.table_data.insert import Insert
-from databaser.parser.table_data.insert_from_select import InsertFromSelect
-from databaser.parser.table_data.update import Update
-from databaser.parser.table_data.delete import Delete
-from databaser.parser.table_structure.add_column import AddColumn
-from databaser.parser.table_structure.create_table import CreateTable, TableField
-from databaser.parser.table_structure.drop_table import DropTable
+from databaser.db_parser.table_data.finder import Finder
+from databaser.db_parser.table_data.insert import Insert
+from databaser.db_parser.table_data.insert_from_select import InsertFromSelect
+from databaser.db_parser.table_data.update import Update
+from databaser.db_parser.table_data.delete import Delete
+from databaser.db_parser.table_structure.add_column import AddColumn
+from databaser.db_parser.table_structure.create_table import CreateTable, TableField
+from databaser.db_parser.table_structure.drop_table import DropTable
 
-from databaser.parser.database.create_database import CreateDatabase
-from databaser.parser.database.drop_database import DropDatabase
-from databaser.parser.database.create_schema import CreateSchema
+from databaser.db_parser.database.create_database import CreateDatabase
+from databaser.db_parser.database.drop_database import DropDatabase
+from databaser.db_parser.database.create_schema import CreateSchema
 
 
 class Query:

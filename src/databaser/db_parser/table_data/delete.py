@@ -1,4 +1,4 @@
-from databaser.parser.table_data.condition_parser import ConditionParser
+from databaser.db_parser.table_data.condition_parser import ConditionParser
 
 
 class Delete:
