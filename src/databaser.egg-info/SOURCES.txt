@@ -22,6 +22,7 @@ src/databaser/db_parser/database/drop_database.py
 src/databaser/db_parser/table_data/__init__.py
 src/databaser/db_parser/table_data/condition_parser.py
 src/databaser/db_parser/table_data/delete.py
+src/databaser/db_parser/table_data/field_parser.py
 src/databaser/db_parser/table_data/finder.py
 src/databaser/db_parser/table_data/insert.py
 src/databaser/db_parser/table_data/insert_from_select.py

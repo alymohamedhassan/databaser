@@ -6,7 +6,7 @@ from databaser.engine.engine import DatabaseEngine
 from databaser.db_parser.table_structure.create_table import TableField
 from databaser.pgsql import Query
 
-from config import conn_string
+from databaser.config import conn_string
 
 
 class DataModel:
@@ -28,7 +28,8 @@ class DataModel:
                  group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0):
 
         if fields is None:
-            fields = self.__get_fields()
+            # fields = self.__get_fields()
+            fields = None
 
         sql = Query(
             'pgsql'
