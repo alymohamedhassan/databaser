@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="databaser",
-    version="0.9.11",
+    version="0.9.12",
     author="Aly Mohamed Hassan",
     author_email="alyhassan10@hotmail.com",
     description="A small package to generate SQL for postgreSQL",
