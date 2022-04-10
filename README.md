@@ -216,9 +216,10 @@ Create a dictionary and follow the instructions below
 To follow with the join instructions, there are some notation for it
 
     1) $table => References the table joined
-    2) $this => Used with the notation above to indicate that the joining table is the currently selected table
+    2) $schema_name => Schema Name for all tables joined, default "public"
+    3) $this => Used with the notation above to indicate that the joining table is the currently selected table
     
-    3) $on => Corresponds to the (ON) keyword in SQL used in joins
+    4) $on => Corresponds to the (ON) keyword in SQL used in joins
         i) $type => type of join, Equijoin, non-equijoin
             a) $eq => Equal (=)
             a) $gt => Greater Than (>)
