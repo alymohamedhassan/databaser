@@ -1,5 +1,6 @@
 from typing import List
 
+from databaser.db_parser.table_data.field_parser import FieldParser
 from databaser.engine.engine import DatabaseEngine
 from databaser.engine.result import ExecutionResult
 from databaser.db_parser.table_data.condition_parser import ConditionParser
@@ -29,12 +30,7 @@ class Finder:
         if order_by is None or len(order_by.keys()) == 0:
             self.order_by = {}
 
-        if fields is None or len(fields) == 0:
-            self.fields = "*"
-        else:
-            fields = [f"{self.field_quote}{self.schema_name}{self.field_quote}.{self.field_quote}{self.table_name}{self.field_quote}.{self.field_quote}{field}{self.field_quote}"
-                           for field in fields]
-            self.fields = f','.join(fields)
+        self.fields = fields
 
     def order_by_parser(self, order_by: dict):
         orders = []
@@ -57,11 +53,18 @@ class Finder:
     def get_sql(self) -> str:
         clauses = []
 
-        joins = "" if len(self.joins.keys()) == 0 else JoinParser(self.table_name, self.joins, self.table_quote,
-                                                                  self.field_quote
-                                                                  ).get_parsed()
-        if joins != "":
+        if len(self.joins.keys()) > 0:
+            joins = JoinParser(
+                self.table_name,
+                self.joins,
+                self.table_quote,
+                self.field_quote
+            ).get_parsed()
+
             clauses.append(joins)
+
+        # Set fields shape
+        self.fields = FieldParser(self.fields, self.table_name, self.schema_name).parse()
 
         where = "" if len(self.conditions.keys()) == 0 else "WHERE " + ConditionParser(self.conditions,
                                                                                        self.field_quote).get_parsed()
