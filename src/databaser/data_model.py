@@ -24,6 +24,11 @@ class DataModel:
 
         return fields
 
+    def count(self):
+        sql = Query('pgsql').count(self.table_name, self.schema_name)
+        self.__sql.append(sql)
+        return self
+
     def get(self, fields: List = None, condition: dict = {}, joins: dict = {},
                  group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0):
 

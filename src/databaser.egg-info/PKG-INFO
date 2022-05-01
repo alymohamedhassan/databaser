@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: databaser
-Version: 0.9.11
+Version: 0.9.12
 Summary: A small package to generate SQL for postgreSQL
 Home-page: https://github.com/alymohamedhassan/databaser
 Author: Aly Mohamed Hassan

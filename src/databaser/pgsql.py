@@ -23,6 +23,9 @@ class Query:
             self.FIELD_QUOTE = '"'
             self.TABLE_QUOTE = '"'
 
+    def count(self, table_name: str, schema_name: str = "public"):
+        return f"""SELECT count(*) FROM {self.TABLE_QUOTE}{schema_name}{self.TABLE_QUOTE}.{self.TABLE_QUOTE}{table_name}{self.TABLE_QUOTE}"""
+
     def find(self, table_name: str, fields: List[str] = None, condition: dict = {}, joins: dict = {},
              group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0, schema_name: str = "public"):
         return Finder(table_name, fields, condition, joins, group_by, order_by, limit, skip, self.FIELD_QUOTE,

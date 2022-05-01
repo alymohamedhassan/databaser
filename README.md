@@ -426,6 +426,7 @@ Date models support these methods internally,
     
     - get
     - get_one
+    - count
     - insert
     - insert_many (Under Development)
     - update
