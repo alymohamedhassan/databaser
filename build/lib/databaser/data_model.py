@@ -24,6 +24,11 @@ class DataModel:
 
         return fields
 
+    def count(self):
+        sql = Query('pgsql').count(self.table_name, self.schema_name)
+        self.__sql.append(sql)
+        return self
+
     def get(self, fields: List = None, condition: dict = {}, joins: dict = {},
                  group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0):
 
@@ -37,10 +42,10 @@ class DataModel:
         self.__sql.append(sql)
         return self
 
-    def get_one(self, fields: List[str] = None, condition: dict = {}, joins: dict = {}, order_by: dict = {}):
+    def get_one(self, fields: List[str] = None, condition: dict = {}, joins: dict = {}, group_by: list = [], order_by: dict = {}):
         sql = Query(
             'pgsql'
-        ).find(self.table_name, fields, condition, joins, limit=1, schema_name=self.schema_name, order_by=order_by).get_sql()
+        ).find(self.table_name, fields, condition, joins, limit=1, schema_name=self.schema_name, group_by=group_by, order_by=order_by).get_sql()
         # print("This instance:", id(self))
         # print("This instance:", self.__sql)
 

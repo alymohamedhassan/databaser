@@ -71,9 +71,24 @@ class Finder:
         if where != "":
             clauses.append(where)
 
-        group_by = "" if len(
-            self.group_by) == 0 else f"GROUP BY {self.field_quote}{f'{self.field_quote}, {self.field_quote}'.join(self.group_by)}{self.field_quote}"
-        if group_by != "":
+        # group_by = "" if len(
+        #     self.group_by) == 0 else f"GROUP BY {self.field_quote}{f'{self.field_quote}, {self.field_quote}'.join(self.group_by)}{self.field_quote}"
+        # if group_by != "":
+        #     clauses.append(group_by)
+
+        if self.group_by.__len__() != 0:
+            group_by = "GROUP BY "
+            count = self.group_by.__len__()
+            for idx, group in enumerate(self.group_by):
+                table_name = self.table_name
+                field = group.split(".")
+                if len(field) > 1:
+                    table_name = field[0]
+                field = field[-1]
+
+                group_by += f"{self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{table_name}{self.table_quote}.{self.field_quote}{field}{self.field_quote}"
+                group_by += ", " if count > 1 and idx < (count-1) else ""
+            # group_by = f"GROUP BY {self.field_quote}{self.schema_name}{self.field_quote}.{self.field_quote}{self.table_name}{self.field_quote}.{self.field_quote}{f'{self.field_quote}, {self.field_quote}{self.schema_name}{self.field_quote}.{self.table_quote}{self.table_name}{self.table_quote}.{self.field_quote}'.join(self.group_by)}{self.field_quote}"
             clauses.append(group_by)
 
         order_by = "" if len(self.order_by.keys()) == 0 else self.order_by_parser(self.order_by)

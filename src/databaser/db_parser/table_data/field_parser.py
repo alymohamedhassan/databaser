@@ -1,3 +1,4 @@
+import re
 from typing import List
 
 
@@ -16,17 +17,22 @@ class FieldParser:
 
         fields = []
         for field in self.fields:
+            x = re.search("[a-zA-Z]+\([^\)]*\)(\.[^\)]*\))?", field)
+            f = ""
+            if x:
+                split = field.split("(")
+                f = split[0]
+                field = split[-1][:-1]
+
             field_split = field.split(".")
             field = field_split[-1] if field_split.__len__() in [1, 2, 3] else field
             table_name = field_split[-2] if field_split.__len__() in [2, 3] else self.table_name
             schema_name = field_split[-3] if field_split.__len__() == 3 else self.schema_name
 
-            print("Field Name:", field)
-
             schema_name = f"{self.table_quote}{schema_name}{self.table_quote}."
             table_name = f"{self.table_quote}{table_name}{self.table_quote}."
             field = schema_name + table_name + f"{self.field_quote}{field}{self.field_quote}"
-
+            field = f"{f}({field})" if f != "" else field
             fields.append(field)
         # fields = [f"{self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote}.{self.field_quote}{field}{self.field_quote}"
         #                for field in self.fields]
