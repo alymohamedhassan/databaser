@@ -17,9 +17,15 @@ class FieldParser:
 
         fields = []
         for field in self.fields:
-            x = re.search("[a-zA-Z]+\([^\)]*\)(\.[^\)]*\))?", field)
+            alias = field.split(" as ")
+            if alias.__len__() > 1:
+                field = alias[0]
+                alias = alias[-1]
+            else:
+                alias = ""
+
             f = ""
-            if x:
+            if re.search("[a-zA-Z]+\([^\)]*\)(\.[^\)]*\))?", field):
                 split = field.split("(")
                 f = split[0]
                 field = split[-1][:-1]
@@ -33,6 +39,7 @@ class FieldParser:
             table_name = f"{self.table_quote}{table_name}{self.table_quote}."
             field = schema_name + table_name + f"{self.field_quote}{field}{self.field_quote}"
             field = f"{f}({field})" if f != "" else field
+            field = f"{field} as {alias}" if alias != "" else field
             fields.append(field)
         # fields = [f"{self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote}.{self.field_quote}{field}{self.field_quote}"
         #                for field in self.fields]

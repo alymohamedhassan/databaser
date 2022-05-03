@@ -55,7 +55,8 @@ class ConditionParser:
         conditions = []
         for fc in field_condition.keys():
             if fc == "$value":
-                parse = f"{self.field_quote}{field_name}{self.field_quote} = '{field_condition[fc]}'"
+                operator = f"= '{field_condition[fc]}'" if field_condition[fc] is not None else "is NULL"
+                parse = f"{self.field_quote}{field_name}{self.field_quote} {operator} "
                 conditions.append(parse)
             if fc == "$like":
                 parse = f"{self.field_quote}{field_name}{self.field_quote} LIKE '{field_condition[fc]}'"
