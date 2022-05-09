@@ -12,6 +12,7 @@ from databaser.db_parser.table_structure.drop_table import DropTable
 from databaser.db_parser.database.create_database import CreateDatabase
 from databaser.db_parser.database.drop_database import DropDatabase
 from databaser.db_parser.database.create_schema import CreateSchema
+from databaser.db_parser.database.drop_schema import DropSchema
 
 
 class Query:
@@ -85,3 +86,6 @@ class DatabaseStructure:
 
     def create_schema(self, schema_name):
         return CreateSchema(schema_name, self.TABLE_QUOTE)
+
+    def drop_schema(self, schema_name, cascade: bool = False):
+        return DropSchema(schema_name, self.TABLE_QUOTE, cascade=cascade)
