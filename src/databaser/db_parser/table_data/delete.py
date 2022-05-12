@@ -17,4 +17,4 @@ class Delete:
         if where != "":
             where = "WHERE " + where
 
-        return f"DELETE FROM {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote} {where}"
+        return f"""DELETE FROM {f"{self.table_quote}{self.schema_name}{self.table_quote}." if self.schema_name != '' else ""}{self.table_quote}{self.table_name}{self.table_quote} {where}"""

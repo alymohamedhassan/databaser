@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: databaser
-Version: 0.9.17
+Version: 0.9.18
 Summary: A small package to generate SQL for postgreSQL
 Home-page: https://github.com/alymohamedhassan/databaser
 Author: Aly Mohamed Hassan
@@ -11,12 +11,13 @@ Description: # Databaser
         
         ## Introduction
         
-        It is query builder that can be connected to the database (Currently, Postgresql), 
+        It is query builder that can be connected to the database (Currently, Postgresql, and SQL Server),
         and gives you the ability to insert and select using python dictionary making development more flexible and easier than other production ORMs.
         
         ### Databases Supported
         
         - Postgresql
+        - Sql Server
         
         ## Design Principles
         

@@ -12,6 +12,7 @@ class Finder:
     def __init__(self, table_name: str, fields: List[str] = None, condition: dict = {}, joins: dict = {},
                  group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0, table_quote="",
                  field_quote="", schema_name: str = "public"):
+
         self.table_name = table_name
         self.schema_name = schema_name
         self.limit = limit
@@ -86,7 +87,7 @@ class Finder:
                     table_name = field[0]
                 field = field[-1]
 
-                group_by += f"{self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{table_name}{self.table_quote}.{self.field_quote}{field}{self.field_quote}"
+                group_by += f"""{f"{self.table_quote}{self.schema_name}{self.table_quote}." if self.schema_name != '' else ""}{self.table_quote}{table_name}{self.table_quote}.{self.field_quote}{field}{self.field_quote}"""
                 group_by += ", " if count > 1 and idx < (count-1) else ""
             # group_by = f"GROUP BY {self.field_quote}{self.schema_name}{self.field_quote}.{self.field_quote}{self.table_name}{self.field_quote}.{self.field_quote}{f'{self.field_quote}, {self.field_quote}{self.schema_name}{self.field_quote}.{self.table_quote}{self.table_name}{self.table_quote}.{self.field_quote}'.join(self.group_by)}{self.field_quote}"
             clauses.append(group_by)
@@ -106,11 +107,11 @@ class Finder:
         if len(clauses) > 0:
             clauses.insert(0, "")
 
-        return f"""SELECT {self.fields} FROM {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote}{' '.join(clauses)};"""
+        print("Schema Name:", self.schema_name, self.schema_name == '')
+        return f"""SELECT {self.fields} FROM {f"{self.table_quote}{self.schema_name}{self.table_quote}." if self.schema_name != '' else ""}{self.table_quote}{self.table_name}{self.table_quote}{' '.join(clauses)};"""
 
     def run(self, **connection_params) -> ExecutionResult:
         sql = self.get_sql()
         result = DatabaseEngine(**connection_params).execute(sql=sql, transaction=False,
                                                      has_return=False, return_many=False)
-
         return result
