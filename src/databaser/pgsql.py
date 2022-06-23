@@ -32,7 +32,7 @@ class Query:
              group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0, schema_name: str = "public"):
         schema_name = schema_name if self.server_name in ['pgsql'] else ''
         return Finder(table_name, fields, condition, joins, group_by, order_by, limit, skip, self.FIELD_QUOTE,
-                      self.FIELD_QUOTE, schema_name)
+                      self.FIELD_QUOTE, schema_name, self.server_name)
 
     def insert(self, table_name: str, data: dict, value_quote: bool = False, schema_name: str = "public"):
         schema_name = schema_name if self.server_name in ['pgsql'] else ''

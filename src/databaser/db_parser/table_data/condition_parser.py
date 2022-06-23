@@ -54,10 +54,21 @@ class ConditionParser:
     def condition(self, field_name: str, field_condition: dict) -> List:
         conditions = []
         for fc in field_condition.keys():
-            if fc == "$value":
-                operator = f"= '{field_condition[fc]}'" if field_condition[fc] is not None else "is NULL"
-                parse = f"{self.field_quote}{field_name}{self.field_quote} {operator} "
+            if fc in ["$value", "$gt", "$gte", "$lt", "$lte", ]:
+                operator = "="
+                operator = ">" if fc == "$gt" else operator
+                operator = ">=" if fc == "$gte" else operator
+                operator = "<" if fc == "$lt" else operator
+                operator = "<=" if fc == "$lte" else operator
+
+                parse = f"{self.field_quote}{field_name}{self.field_quote} {operator} '{field_condition[fc]}'"
                 conditions.append(parse)
+
+            if fc == "$range":
+                parse = f"{self.field_quote}{field_name}{self.field_quote} >= '{field_condition[fc]['from']}' AND " \
+                        f"{self.field_quote}{field_name}{self.field_quote} <= '{field_condition[fc]['to']}'"
+                conditions.append(parse)
+
             if fc == "$like":
                 parse = f"{self.field_quote}{field_name}{self.field_quote} LIKE '{field_condition[fc]}'"
                 conditions.append(parse)
@@ -65,6 +76,7 @@ class ConditionParser:
                 in_fields = "','".join(field_condition[fc].split(','))
                 parse = f"{self.field_quote}{field_name}{self.field_quote} IN ('{in_fields}')"
                 conditions.append(parse)
+
             if fc == "$nin":  # TODO: Add support for type to be list instead of str and split by , and support for SQL
                 in_fields = "','".join(field_condition[fc].split(','))
                 parse = f"{self.field_quote}{field_name}{self.field_quote} NOT IN ('{in_fields}')"

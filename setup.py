@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="databaser",
-    version="0.9.18",
+    version="0.9.26",
     author="Aly Mohamed Hassan",
     author_email="alyhassan10@hotmail.com",
     description="A small package to generate SQL for postgreSQL",
@@ -23,4 +23,10 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
+    install_requires=[
+        "pymssql",
+        "psycopg2",
+        "pydantic",
+        "function",
+    ]
 )

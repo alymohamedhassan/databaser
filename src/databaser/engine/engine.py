@@ -2,6 +2,7 @@ from typing import List, Dict, Union
 
 import psycopg2
 import psycopg2.extras
+import pymssql
 
 from .result import ExecutionResult
 
@@ -31,11 +32,21 @@ class DatabaseEngine:
             # read connection parameters
             # connect to the PostgreSQL server
             print('Connecting to the database...')
-            conn = psycopg2.connect(**self.params)
+            database_type = self.params['database_type']
+            self.params.pop("database_type", None)
+            if database_type == "pgsql":
+                conn = psycopg2.connect(**self.params)
 
-            # create a cursor
-            cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            conn.autocommit = False
+                # create a cursor
+                cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+                conn.autocommit = False
+
+            elif database_type == "sqlsrv":
+                conn = pymssql.connect(**self.params, autocommit=False)
+
+                # create a cursor
+                cur = conn.cursor(as_dict=True)
+
             try:
                 # execute a statement
                 print('PostgreSQL database version:')

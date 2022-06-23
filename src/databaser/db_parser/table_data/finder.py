@@ -11,7 +11,9 @@ class Finder:
 
     def __init__(self, table_name: str, fields: List[str] = None, condition: dict = {}, joins: dict = {},
                  group_by: list = [], order_by: dict = {}, limit: int = 0, skip: int = 0, table_quote="",
-                 field_quote="", schema_name: str = "public"):
+                 field_quote="", schema_name: str = "public", server_name: str = "pgsql"):
+
+        self.server_name = server_name
 
         self.table_name = table_name
         self.schema_name = schema_name
@@ -96,9 +98,10 @@ class Finder:
         if order_by != "":
             clauses.append(order_by)
 
-        limit = f"LIMIT {self.limit}" if self.limit is not None and self.limit > 0 else ""
-        if limit != "":
-            clauses.append(limit)
+        if self.server_name in ['pgsql']:
+            limit = f"LIMIT {self.limit}" if self.limit is not None and self.limit > 0 else ""
+            if limit != "":
+                clauses.append(limit)
 
         offset = f"OFFSET {self.offset}" if self.offset is not None and self.offset > 0 else ""
         if offset != "":
@@ -107,8 +110,8 @@ class Finder:
         if len(clauses) > 0:
             clauses.insert(0, "")
 
-        print("Schema Name:", self.schema_name, self.schema_name == '')
-        return f"""SELECT {self.fields} FROM {f"{self.table_quote}{self.schema_name}{self.table_quote}." if self.schema_name != '' else ""}{self.table_quote}{self.table_name}{self.table_quote}{' '.join(clauses)};"""
+        # print("Schema Name:", self.schema_name, self.schema_name == '')
+        return f"""SELECT {f"TOP {self.limit}" if self.server_name == "sqlsrv" else ""} {self.fields} FROM {f"{self.table_quote}{self.schema_name}{self.table_quote}." if self.schema_name != '' else ""}{self.table_quote}{self.table_name}{self.table_quote}{' '.join(clauses)};"""
 
     def run(self, **connection_params) -> ExecutionResult:
         sql = self.get_sql()

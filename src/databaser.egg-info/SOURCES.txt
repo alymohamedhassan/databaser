@@ -3,7 +3,6 @@ pyproject.toml
 setup.cfg
 setup.py
 src/databaser/__init__.py
-src/databaser/config.py
 src/databaser/data_model.py
 src/databaser/databaser.py
 src/databaser/factory.py
@@ -13,6 +12,7 @@ src/databaser/tests.py
 src/databaser.egg-info/PKG-INFO
 src/databaser.egg-info/SOURCES.txt
 src/databaser.egg-info/dependency_links.txt
+src/databaser.egg-info/requires.txt
 src/databaser.egg-info/top_level.txt
 src/databaser/db_parser/__init__.py
 src/databaser/db_parser/database/__init__.py
