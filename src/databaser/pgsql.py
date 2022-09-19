@@ -71,8 +71,8 @@ class TableStructure:
         schema_name = schema_name if self.server_name in ['pgsql'] else ''
         return CreateTable(table_name, table_fields, schema_name, self.TABLE_QUOTE, self.FIELD_QUOTE)
 
-    def add_column(self, table_name: str, column_name: str, data_type: str, not_null: bool):
-        return AddColumn(table_name, column_name, data_type, not_null, self.TABLE_QUOTE, self.FIELD_QUOTE)
+    def add_column(self, table_name: str, column_name: str, data_type: str, not_null: bool, schema_name: str = "public"):
+        return AddColumn(table_name, column_name, data_type, not_null, self.TABLE_QUOTE, self.FIELD_QUOTE, schema_name)
 
     def drop_table(self, table_name: str, if_exists: bool = False):
         return DropTable(table_name, self.TABLE_QUOTE, if_exists)

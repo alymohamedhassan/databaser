@@ -1,6 +1,7 @@
 class AddColumn:
     def __init__(self, table_name: str, column_name: str, data_type: str, not_null: bool, table_quote: str = "",
-                 field_quote: str = ""):
+                 field_quote: str = "", schema_name: str = "public"):
+        self.schema_name = schema_name
         self.table_name = table_name
         self.column_name = column_name
         self.data_type = data_type
@@ -10,4 +11,4 @@ class AddColumn:
 
     def get_sql(self):
         nullable = 'NOT NUll' if self.not_null else 'NULL'
-        return f"ALTER TABLE {self.table_quote}{self.table_name}{self.table_quote} ADD COLUMN {self.field_quote}{self.column_name}{self.field_quote} {self.data_type} {nullable};"
+        return f"ALTER TABLE {self.table_quote}{self.schema_name}{self.table_quote}.{self.table_quote}{self.table_name}{self.table_quote} ADD COLUMN {self.field_quote}{self.column_name}{self.field_quote} {self.data_type} {nullable};"

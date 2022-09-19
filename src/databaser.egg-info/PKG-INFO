@@ -1,13 +1,11 @@
 Metadata-Version: 2.1
 Name: databaser
-Version: 0.9.26
+Version: 0.9.29
 Summary: A small package to generate SQL for postgreSQL
 Home-page: https://github.com/alymohamedhassan/databaser
 Author: Aly Mohamed Hassan
 Author-email: alyhassan10@hotmail.com
-License: UNKNOWN
 Project-URL: Bug Tracker, https://github.com/alymohamedhassan/databaser/issues
-Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Operating System :: OS Independent
@@ -470,6 +468,4 @@ The result parameter will return a list by default,
 But if the execute method has return_many=False, logically used when the limit is = 1, but not enforced
 
     DatabaseEngine(**conn_string).execute("SELECT * FROM X", return_many=False)
-
-
 

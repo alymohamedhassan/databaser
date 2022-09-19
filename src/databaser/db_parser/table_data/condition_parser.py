@@ -1,8 +1,12 @@
 from typing import List, Tuple
 
+from databaser.db_parser.table_data.field_parser import FieldParser
+
 
 class ConditionParser:
-    def __init__(self, conditions: dict, field_quote: str = ""):
+    def __init__(self, conditions: dict, field_quote: str = "", schema_name: str = "public"):
+        self.schema_name = schema_name
+
         self.conditions = conditions
         self.field_quote = field_quote
 
@@ -52,6 +56,12 @@ class ConditionParser:
         return f"{f' {logical_operator} '.join(parsed_conditions)}"
 
     def condition(self, field_name: str, field_condition: dict) -> List:
+        table_name = ""
+        if field_name.__contains__("."):
+            table_name = "{field_quote}{table_name}{field_quote}.".format(
+                field_quote=self.field_quote, table_name=field_name.split(".")[0])
+            field_name = field_name.split(".")[1]
+
         conditions = []
         for fc in field_condition.keys():
             if fc in ["$value", "$gt", "$gte", "$lt", "$lte", ]:
@@ -61,20 +71,20 @@ class ConditionParser:
                 operator = "<" if fc == "$lt" else operator
                 operator = "<=" if fc == "$lte" else operator
 
-                parse = f"{self.field_quote}{field_name}{self.field_quote} {operator} '{field_condition[fc]}'"
+                parse = f"{table_name}{self.field_quote}{field_name}{self.field_quote} {operator} '{field_condition[fc]}'"
                 conditions.append(parse)
 
             if fc == "$range":
-                parse = f"{self.field_quote}{field_name}{self.field_quote} >= '{field_condition[fc]['from']}' AND " \
-                        f"{self.field_quote}{field_name}{self.field_quote} <= '{field_condition[fc]['to']}'"
+                parse = f"{table_name}{self.field_quote}{field_name}{self.field_quote} >= '{field_condition[fc]['from']}' AND " \
+                        f"{table_name}{self.field_quote}{field_name}{self.field_quote} <= '{field_condition[fc]['to']}'"
                 conditions.append(parse)
 
             if fc == "$like":
-                parse = f"{self.field_quote}{field_name}{self.field_quote} LIKE '{field_condition[fc]}'"
+                parse = f"{table_name}{self.field_quote}{field_name}{self.field_quote} LIKE '{field_condition[fc]}'"
                 conditions.append(parse)
             if fc == "$in":
                 in_fields = "','".join(field_condition[fc].split(','))
-                parse = f"{self.field_quote}{field_name}{self.field_quote} IN ('{in_fields}')"
+                parse = f"{table_name}{self.field_quote}{field_name}{self.field_quote} IN ('{in_fields}')"
                 conditions.append(parse)
 
             if fc == "$nin":  # TODO: Add support for type to be list instead of str and split by , and support for SQL
