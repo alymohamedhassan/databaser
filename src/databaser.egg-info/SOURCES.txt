@@ -9,6 +9,7 @@ src/databaser/factory.py
 src/databaser/m2m_model.py
 src/databaser/pgsql.py
 src/databaser/tests.py
+src/databaser/transaction.py
 src/databaser.egg-info/PKG-INFO
 src/databaser.egg-info/SOURCES.txt
 src/databaser.egg-info/dependency_links.txt

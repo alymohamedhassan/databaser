@@ -47,8 +47,6 @@ class DataModel:
         sql = Query(
             self.server_name
         ).find(self.table_name, fields, condition, joins, limit=1, schema_name=self.schema_name, group_by=group_by, order_by=order_by).get_sql()
-        # print("This instance:", id(self))
-        # print("This instance:", self.__sql)
 
         self.__sql.append(sql)
 

@@ -21,7 +21,6 @@ class JoinParser:
 
         conditions = self.parse_join_condition(joining_table=joining_table, table=table, schema_name=self.joins['$schema_name'])
 
-        print("conditions", "$and" in table['$on'])
         if "$and" in table['$on']:
             conditions += " AND " + self.parse(joining_table, table['$on']['$and'], True)
 
@@ -67,19 +66,29 @@ class JoinParser:
             elif table['$on']['$type'] == "$ne":
                 operator = "<>"
 
-        columnX = table['$on']['$tableA']
-        columnY = table['$on']['$tableB']
-
         if "$table" not in table:
             raise Exception("Joined Table not specified")
 
         table_name = table['$table'] if table['$table'] != "$this" else self.table_name
-        table_name = f"{self.table_quote}{schema_name}{self.table_quote}.{self.table_quote}{table_name}{self.table_quote}"
+        # table_name = f"{self.table_quote}{schema_name}{self.table_quote}.{self.table_quote}{table_name}{self.table_quote}"
 
-        conditions = f"{table_name}." \
-                     f"{self.field_quote}{columnX}{self.field_quote} "\
+        columnX = self.parse_field_name(table['$on']['$tableA'], schema_name, table_name)
+        columnY = self.parse_field_name(table['$on']['$tableB'], schema_name, joining_table)
+
+        conditions = f"{columnX} "\
                      f"{operator} " \
-                     f"{self.table_quote}{joining_table}{self.table_quote}." \
-                     f"{self.field_quote}{columnY}{self.field_quote}"
+                     f"{columnY}"
 
         return conditions
+
+    def parse_field_name(self, field_name: str, schema_name: str, table_name: str = "") -> str:
+        if table_name == "":
+            table_name = self.table_name
+
+        if field_name.split(".").__len__() == 2:
+            return f"{self.field_quote}{schema_name}{self.field_quote}.{self.table_quote}{field_name.split('.')[0]}{self.table_quote}.{self.field_quote}{field_name.split('.')[1]}{self.field_quote}"
+
+        if field_name.split(".").__len__() == 3:
+            return f"{self.table_quote}{field_name.split('.')[0]}{self.table_quote}.{self.table_quote}{field_name.split('.')[1]}{self.table_quote}.{self.field_quote}{field_name.split('.')[2]}{self.field_quote}"
+
+        return f"{self.field_quote}{schema_name}{self.field_quote}.{self.field_quote}{table_name}{self.field_quote}.{self.field_quote}{field_name}{self.field_quote}"

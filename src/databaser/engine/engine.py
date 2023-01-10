@@ -11,7 +11,6 @@ class DatabaseEngine:
     transaction = 'BEGIN;'
 
     def __init__(self, **params):
-        print("params", params)
         if params is None:
             raise Exception("Missing Database Connection string")
         self.params = params
@@ -93,9 +92,7 @@ class DatabaseEngine:
                 conn.close()
                 print('Database connection closed.')
 
-        # print("Resulting SQL:", str(sql), type(str(sql)))
         if failure is not None:
-            print("failure:", failure)
             raise Exception(failure)
 
         return ExecutionResult(**{
